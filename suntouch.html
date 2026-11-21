@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#FBF4E9">
+<title>Historia Włosa – prototyp aplikacji</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FBF4E9; --card:#FFFFFF; --ink:#1F1A17; --muted:#7A6F66; --line:#EDE3D4;
+  --honey:#F2B84B; --honey-soft:#FCEBC8; --honey-ink:#6B4A0E; --ok:#3F7D4E; --danger:#B4452F;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#EDE7DE;font-family:Outfit,system-ui,sans-serif;color:var(--ink)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input{font:inherit;color:inherit}
+.phone{position:relative;max-width:420px;height:100%;margin:0 auto;background:var(--cream);overflow:hidden;display:flex;flex-direction:column}
+@media(min-width:480px){body{padding:24px 0}.phone{height:calc(100% - 0px);max-height:880px;border-radius:36px;box-shadow:0 20px 60px rgba(31,26,23,.18)}}
+.screen{flex:1;overflow-y:auto;padding:22px 18px 110px;scroll-behavior:smooth}
+.screen.noNav{padding-bottom:30px}
+h1{font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+h2{font-size:19px;font-weight:700;letter-spacing:-.01em}
+h3{font-size:16px;font-weight:600}
+.sub{color:var(--muted);font-size:13.5px;margin-top:4px}
+.eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-top:12px}
+.dark{background:var(--ink);color:#fff;border:0}
+.honey{background:var(--honey);border:0}
+.soft{background:var(--honey-soft);border:0}
+.row{display:flex;align-items:center;gap:12px}
+.between{justify-content:space-between}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600}
+.pill.honey{background:var(--honey-soft);color:var(--honey-ink)}
+.pill.dark{background:#3A322C;color:var(--honey)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border-radius:999px;padding:15px 18px;font-weight:600;font-size:15px;background:var(--ink);color:#fff;margin-top:14px;transition:transform .1s}
+.btn:active{transform:scale(.98)}
+.btn.honeyBtn{background:var(--honey);color:var(--ink)}
+.btn.ghost{background:transparent;border:1.5px solid var(--ink);color:var(--ink)}
+.btn:disabled{opacity:.35}
+.mini{border:1.5px solid var(--ink);border-radius:999px;padding:6px 14px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.mini.fill{background:var(--honey);border-color:var(--honey)}
+.mini.blk{background:var(--ink);color:#fff}
+.ico{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.list>*+*{border-top:1px solid var(--line)}
+.li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 0}
+.li .t{font-weight:600;font-size:14.5px}
+.li .s{color:var(--muted);font-size:12.5px;margin-top:2px}
+.bar{height:6px;border-radius:99px;background:#4A413A;margin-top:14px;overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--honey);border-radius:99px;transition:width .6s}
+.big{font-size:52px;font-weight:800;letter-spacing:-.03em;color:var(--honey);line-height:1}
+.dateBox{width:52px;height:56px;border-radius:14px;background:var(--honey-soft);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.dateBox small{font-size:10px;font-weight:700;color:var(--honey-ink);text-transform:uppercase}
+.dateBox b{font-size:22px;line-height:1}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-top:10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:9px 15px;font-size:13.5px;font-weight:600;white-space:nowrap}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.day{min-width:56px;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:8px 0;text-align:center}
+.day small{display:block;font-size:11px;color:var(--muted)}
+.day b{font-size:19px}
+.day.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.day.on small{color:#cfc6bd}
+.slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.slot{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:11px 0;font-weight:600;font-size:14px}
+.slot.on{background:var(--honey);border-color:var(--honey)}
+.slot:disabled{background:transparent;border-style:dashed;color:#C2B7AB;text-decoration:line-through}
+.svc{display:flex;justify-content:space-between;align-items:center;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:13px 14px;margin-top:8px;width:100%;text-align:left;font-weight:600;font-size:14.5px}
+.svc.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.svc small{font-size:11.5px;font-weight:600;opacity:.75}
+.label{margin-top:20px}
+.nav{position:absolute;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:flex-end;padding:8px 6px calc(10px + env(safe-area-inset-bottom));z-index:5}
+.nav button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;color:var(--muted);width:20%;padding:4px 0}
+.nav button .ib{padding:4px 12px;border-radius:999px}
+.nav button.on{color:var(--ink);font-weight:700}
+.nav button.on .ib{background:var(--honey-soft)}
+.nav .center .ib{background:var(--ink);color:var(--honey);width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:-30px;padding:0;box-shadow:0 6px 16px rgba(31,26,23,.25)}
+.nav .center.on .ib{background:var(--ink)}
+.toast{position:absolute;left:50%;top:18px;transform:translate(-50%,-220px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:16px;font-size:13.5px;font-weight:500;z-index:20;transition:transform .35s;max-width:88%;box-shadow:0 10px 30px rgba(0,0,0,.25);display:flex;gap:10px;align-items:center}
+.toast.show{transform:translate(-50%,0)}
+.sheetBg{position:absolute;inset:0;background:rgba(31,26,23,.45);z-index:10;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
+.sheetBg.show{opacity:1;pointer-events:auto}
+.sheet{background:var(--cream);width:100%;border-radius:26px 26px 0 0;padding:22px 18px 28px;transform:translateY(100%);transition:transform .3s;max-height:88%;overflow-y:auto}
+.sheetBg.show .sheet{transform:none}
+.grab{width:40px;height:5px;border-radius:9px;background:#D9CEC0;margin:-8px auto 16px}
+.field{width:100%;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:14px;font-size:16px;margin-top:8px;outline:none}
+.field:focus{border-color:var(--ink)}
+.code{letter-spacing:.5em;text-align:center;font-size:24px;font-weight:700}
+.photo{aspect-ratio:3/4;border-radius:16px;position:relative;overflow:hidden}
+.photo span{position:absolute;left:8px;bottom:8px;background:rgba(255,255,255,.85);border-radius:99px;padding:3px 9px;font-size:10.5px;font-weight:600}
+.g1{background:linear-gradient(170deg,#5B4232 0%,#8C6A4E 40%,#D9B98A 75%,#F1DDB5 100%)}
+.g2{background:linear-gradient(165deg,#3E2D22 0%,#6E5340 35%,#C9A574 70%,#EBD3A6 100%)}
+.g3{background:linear-gradient(175deg,#7A5A40 0%,#B48D62 45%,#E6CB98 80%,#F7E9C9 100%)}
+.g4{background:linear-gradient(160deg,#2F241C 0%,#5C4433 50%,#A88660 85%,#D8BC8E 100%)}
+.badge{background:var(--danger);color:#fff;font-size:10px;font-weight:700;border-radius:99px;padding:1px 6px;position:absolute;top:0;right:22%}
+.panelBar{background:var(--ink);color:#fff;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;font-size:13px}
+.panelBar b{color:var(--honey)}
+.stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px}
+.stat b{font-size:24px;display:block}
+.stat small{color:var(--muted);font-size:11.5px}
+.status{font-size:11px;font-weight:700;border-radius:99px;padding:3px 9px}
+.st-plan{background:var(--honey-soft);color:var(--honey-ink)}
+.st-done{background:#E1EFE3;color:var(--ok)}
+.st-no{background:#F6E0DA;color:var(--danger)}
+.switch{width:46px;height:28px;border-radius:99px;background:#D9CEC0;position:relative;transition:background .2s;flex-shrink:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .2s}
+.switch.on{background:var(--ink)}
+.switch.on::after{left:21px}
+.logo{display:flex;align-items:center;gap:10px}
+.logoMark{width:46px;height:46px;border-radius:50%;background:var(--honey);display:flex;align-items:center;justify-content:center}
+.stars{display:flex;gap:6px;margin-top:10px}
+.stars button svg{width:32px;height:32px}
+.stars .on svg{fill:var(--honey);stroke:var(--honey)}
+.fade{animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+a{color:inherit}
+</style>
+</head>
+<body>
+<div class="phone" id="phone">
+  <div id="panelBar"></div>
+  <div class="screen" id="screen"></div>
+  <nav class="nav" id="nav"></nav>
+  <div class="toast" id="toast"></div>
+  <div class="sheetBg" id="sheetBg"><div class="sheet" id="sheet"></div></div>
+</div>
+
+<script>
+/* ---------- ikony ---------- */
+const P={
+ home:'<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+ scissors:'<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88M14.47 14.48 20 20M8.12 8.12 12 12"/>',
+ cal:'<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+ star:'<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>',
+ bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+ ig:'<rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6" fill="currentColor"/>',
+ heart:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+ sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+ arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+ back:'<path d="M15 18l-6-6 6-6"/>',
+ gift:'<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/>',
+ check:'<path d="M20 6 9 17l-5-5"/>',
+ clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+ panel:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>',
+ copy:'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+ phone:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>',
+ pin:'<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+ send:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+ x:'<path d="M18 6 6 18M6 6l12 12"/>'
+};
+const I=(n,s='')=>`<svg class="ico" viewBox="0 0 24 24" style="${s}">${P[n]}</svg>`;
+
+/* ---------- dane salonu (do podmiany na dane z bazy) ---------- */
+const SALON={name:'Historia Włosa',ig:'gracjana.suntouch',phone:'532 597 350',address:'ul. Dąbrowskiego 76D, Zielona Góra'};
+const STAFF=[{id:'g',name:'Gracjana'},{id:'s2',name:'[Stylistka 2]'},{id:'s3',name:'[Stylistka 3]'}];
+const CATS=[
+ {name:'Koloryzacja',pts:3,items:[
+   {id:'suntouch',name:'SunTouch – rozświetlenie',dur:180,deposit:100,star:true,staff:['g']},
+   {id:'glob',name:'Koloryzacja globalna',dur:120,staff:['g','s2']},
+   {id:'ton',name:'Tonowanie / odświeżenie koloru',dur:60,staff:['g','s2','s3']}]},
+ {name:'Strzyżenie',pts:2,items:[
+   {id:'cut',name:'Strzyżenie damskie',dur:60,staff:['g','s2','s3']},
+   {id:'fringe',name:'Grzywka / odświeżenie końców',dur:20,staff:['s2','s3']}]},
+ {name:'Pielęgnacja',pts:1,items:[
+   {id:'ritual',name:'Rytuał regenerujący',dur:45,staff:['s2','s3']},
+   {id:'kera',name:'Pielęgnacja keratynowa',dur:90,staff:['s2']}]},
+ {name:'Upięcia',pts:1,items:[
+   {id:'up',name:'Upięcie okolicznościowe',dur:60,staff:['g','s3']}]}
+];
+const SVC={};CATS.forEach(c=>c.items.forEach(i=>SVC[i.id]={...i,cat:c.name,pts:c.pts}));
+const REWARDS=[
+ {id:'r1',name:'Pielęgnacja gratis',cost:10},
+ {id:'r2',name:'Upięcie gratis',cost:12},
+ {id:'r3',name:'Strzyżenie gratis',cost:20},
+ {id:'r4',name:'Koloryzacja −50%',cost:30}];
+
+/* ---------- stan ---------- */
+const MON=['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
+const DOW=['Nd','Pn','Wt','Śr','Czw','Pt','Sob'];
+const today=new Date();today.setHours(0,0,0,0);
+const addD=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const fmt=d=>`${DOW[d.getDay()]}, ${d.getDate()} ${MON[d.getMonth()]}`;
+const S={
+ auth:'email', email:'', name:'Kasia', ref:'',
+ points:14, view:'start', panel:false, newsSeen:false,
+ upcoming:[{id:1,svc:'suntouch',staff:'g',date:addD(today,6),time:'10:00',paid:true}],
+ history:[
+   {date:addD(today,-34),svc:'ton',staff:'g',note:'Tonowanie 9.1 + 9.32, 20 min. Następnym razem SunTouch.',rated:true},
+   {date:addD(today,-82),svc:'cut',staff:'s2',note:'Cięcie 3 cm, cieniowanie przy twarzy.',rated:true}],
+ log:[{t:'Tonowanie / odświeżenie koloru',d:'+3',date:addD(today,-34)},{t:'Polecenie: Ola',d:'+5',date:addD(today,-60)},{t:'Strzyżenie damskie',d:'+2',date:addD(today,-82)},{t:'Urodzinowy bonus',d:'+4',date:addD(today,-120)}],
+ posts:[
+   {type:'PROMOCJA · DO 30 LISTOPADA',title:'Listopadowy rytuał regenerujący −[RABAT]%',body:'[Krótki opis promocji – dla kogo i co obejmuje.]',cta:'Zarezerwuj',svc:'ritual',style:'honey'},
+   {type:'NOWOŚĆ W SALONIE',title:'[Nazwa nowej usługi]',body:'[Co to jest i jaki daje efekt.] Klubowiczki zapisują się jako pierwsze.',style:'card'},
+   {type:'SZKOLENIE SUNTOUCH',title:'Look and learn – 30 listopada',body:'Dla fryzjerów: autorska technika rozjaśniania Gracjany. Zostało 5 miejsc.',style:'card',link:true}],
+ booking:{svc:null,staff:null,day:null,time:null,note:''},
+ vacation:{s2:false},
+ todayList:[
+   {id:'a',time:'10:00',client:'Anna M.',svc:'cut',staff:'g',status:'plan'},
+   {id:'b',time:'12:30',client:'Ola K.',svc:'ton',staff:'s2',status:'plan'},
+   {id:'me',time:'15:00',client:'Kasia (Ty – demo)',svc:'ritual',staff:'s3',status:'plan'},
+   {id:'c',time:'17:00',client:'Magda W.',svc:'glob',staff:'g',status:'plan'}],
+ rating:0
+};
+const REFCODE='KASIA7';
+
+/* ---------- pomocnicze ---------- */
+const $=s=>document.querySelector(s);
+const toast=(msg,ic='check')=>{const t=$('#toast');t.innerHTML=I(ic,'color:var(--honey)')+`<span>${msg}</span>`;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600)};
+const sheet=html=>{$('#sheet').innerHTML='<div class="grab"></div>'+html;$('#sheetBg').classList.add('show')};
+const closeSheet=()=>$('#sheetBg').classList.remove('show');
+$('#sheetBg').addEventListener('click',e=>{if(e.target.id==='sheetBg')closeSheet()});
+const nextReward=()=>REWARDS.find(r=>r.cost>S.points);
+const staffName=id=>STAFF.find(s=>s.id===id).name;
+function hash(s){let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))|0;return Math.abs(h)}
+
+function go(v){S.view=v;if(v==='news')S.newsSeen=true;render();$('#screen').scrollTop=0}
+
+/* ---------- logowanie ---------- */
+function vAuth(){
+ const logo=`<div class="logo" style="margin:40px 0 34px"><div class="logoMark">${I('sun','width:26px;height:26px')}</div><div><div class="eyebrow">Klub</div><h2>Historia Włosa</h2></div></div>`;
+ if(S.auth==='email')return logo+`
+  <h1>Twoja aplikacja<br>salonu</h1><p class="sub" style="font-size:15px">Zapisy, punkty i promocje w jednym miejscu.</p>
+  <div class="label eyebrow">E-mail lub telefon</div>
+  <input class="field" id="em" placeholder="kasia@example.com" value="${S.email}" autocomplete="off">
+  <button class="btn" onclick="S.email=$('#em').value||'kasia@example.com';S.auth='code';render()">Wyślij kod ${I('arrow')}</button>
+  <p class="sub" style="text-align:center;margin-top:16px">Bez haseł. Dostaniesz 6-cyfrowy kod.</p><p class="sub" style="text-align:center;margin-top:28px;font-size:11.5px">Prototyp · dane i ceny przykładowe</p>`;
+ if(S.auth==='code')return logo+`
+  <h1>Wpisz kod</h1><p class="sub" style="font-size:15px">Wysłaliśmy go na ${S.email}. W prototypie wpisz dowolne 6 cyfr.</p>
+  <input class="field code" id="cd" maxlength="6" inputmode="numeric" placeholder="······" oninput="if(this.value.length===6){S.auth='profile';render()}">
+  <button class="btn ghost" onclick="S.auth='profile';render()">Dalej</button>`;
+ return `<div style="margin-top:30px"></div><div class="eyebrow">Witaj w klubie</div><h1 style="margin-top:6px">Jak masz na imię?</h1>
+  <input class="field" id="nm" placeholder="Imię" value="Kasia">
+  <div class="label eyebrow">Data urodzin (prezent w urodziny)</div>
+  <input class="field" type="date" id="bd">
+  <div class="label eyebrow">Kod od koleżanki (opcjonalnie)</div>
+  <input class="field" id="rf" placeholder="np. OLA5K2" style="text-transform:uppercase">
+  <div class="card" style="font-size:13px;line-height:1.5">
+   <label class="row" style="align-items:flex-start"><input type="checkbox" checked style="margin-top:3px;accent-color:#1F1A17"> Akceptuję regulamin i politykę prywatności</label>
+   <label class="row" style="align-items:flex-start;margin-top:8px"><input type="checkbox" checked style="margin-top:3px;accent-color:#1F1A17"> Chcę dostawać promocje i wolne terminy last minute</label>
+  </div>
+  <button class="btn" onclick="S.name=$('#nm').value||'Kasia';const r=$('#rf').value.trim();S.auth='done';render();if(r){toast('Kod polecenia przyjęty – po 1. wizycie obie dostaniecie +5 pkt','gift')}else{toast('Witaj w Klubie Historia Włosa!','sun')}">Wchodzę</button>`;
+}
+
+/* ---------- START ---------- */
+function vStart(){
+ const nr=nextReward(); const prev=[...REWARDS].reverse().find(r=>r.cost<=S.points);
+ const base=prev?prev.cost:0, pct=nr?Math.round((S.points-base)/(nr.cost-base)*100):100;
+ const up=S.upcoming[0];
+ return `
+ <div class="row between"><div><div class="eyebrow">Historia Włosa</div><h1 style="margin-top:4px">Cześć, ${S.name}!</h1></div>
+  <button class="logoMark" onclick="go('account')" style="width:42px;height:42px">${I('sun')}</button></div>
+ <div class="card dark" onclick="go('points')" style="cursor:pointer">
+  <div class="row between"><span style="font-size:13px;color:#cfc6bd">Twoje punkty</span><span class="pill dark">Klub Historia Włosa</span></div>
+  <div class="big" style="margin-top:8px">${S.points} pkt</div>
+  <div class="bar"><i style="width:${Math.min(pct,100)}%"></i></div>
+  <div style="font-size:12.5px;color:#cfc6bd;margin-top:8px">${nr?`Jeszcze ${nr.cost-S.points} pkt do: ${nr.name.toLowerCase()}`:'Masz punkty na każdą nagrodę!'}</div>
+ </div>
+ ${up?`<div class="card row">
+  <div class="dateBox"><small>${MON[up.date.getMonth()]}</small><b>${up.date.getDate()}</b></div>
+  <div style="flex:1"><div class="eyebrow">Najbliższa wizyta</div><h3 style="margin-top:3px">${SVC[up.svc].name}</h3>
+  <div class="sub" style="margin-top:2px">${DOW[up.date.getDay()]}, ${up.time} · z ${staffName(up.staff).replace(/[\[\]]/g,'')} · +${SVC[up.svc].pts} pkt</div></div>
+  <button class="mini" onclick="cancelVisit(${up.id})">Odwołaj</button></div>`
+ :`<div class="card row"><div class="dateBox">${I('cal')}</div><div style="flex:1"><h3>Brak zaplanowanych wizyt</h3><div class="sub">Czas na odświeżenie blondu?</div></div></div>`}
+ <div class="card honey" onclick="openPost(0)" style="cursor:pointer">
+  <div class="eyebrow" style="color:var(--honey-ink)">Promocja miesiąca</div>
+  <h2 style="margin-top:6px">${S.posts[0].title}</h2>
+  <div class="row" style="margin-top:8px;font-size:13px;font-weight:600;gap:6px">Zobacz szczegóły ${I('arrow','width:16px')}</div>
+ </div>
+ <div class="grid2">
+  <a class="card" href="https://www.instagram.com/${SALON.ig}/" target="_blank" rel="noopener" style="text-decoration:none">${I('ig')}<h3 style="margin-top:14px;font-size:14px">Metamorfozy na Instagramie</h3><div class="sub">@${SALON.ig}</div></a>
+  <button class="card" style="text-align:left" onclick="openRefer()">${I('heart')}<h3 style="margin-top:14px;font-size:14px">Poleć koleżankę</h3><div class="sub">+5 pkt dla Was obu</div></button>
+ </div>
+ <div class="card">
+  <div class="row between"><h3>Metamorfozy SunTouch</h3><span class="sub" style="margin:0">blond bez pasów</span></div>
+  <div class="grid2" style="grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px">
+   <div class="photo g1"></div><div class="photo g2"></div><div class="photo g3"></div><div class="photo g4"></div></div>
+  <div class="sub" style="font-size:11.5px;margin-top:8px">Tu pojawią się zdjęcia przed/po dodawane przez salon.</div>
+ </div>
+ <button class="btn" onclick="startBooking()">${I('cal')} Umów wizytę</button>`;
+}
+
+/* ---------- USŁUGI ---------- */
+function vServices(){
+ return `<h1>Usługi</h1><p class="sub">Za każdą wizytę zbierasz punkty</p>
+ <div class="card dark row" style="align-items:flex-start">
+  <div class="logoMark" style="width:40px;height:40px">${I('sun')}</div>
+  <div style="flex:1"><div class="eyebrow" style="color:var(--honey)">Autorska technika Gracjany</div>
+  <h3 style="margin-top:4px">SunTouch</h3>
+  <p style="font-size:13px;color:#cfc6bd;margin-top:4px;line-height:1.45">Rozjaśnianie inspirowane słońcem: naturalne podziały, rozmyty odrost i blond bez pasów.</p>
+  <button class="mini fill" style="margin-top:10px;color:var(--ink)" onclick="startBooking('suntouch')">Zapisz się na SunTouch</button></div>
+ </div>
+ ${CATS.map(c=>`<div class="card"><div class="row between"><h2 style="font-size:17px">${c.name}</h2><span class="pill honey">+${c.pts} pkt</span></div>
+  <div class="list" style="margin-top:6px">${c.items.map(i=>`<div class="li"><div><div class="t">${i.name}</div><div class="s">${i.dur} min · od [CENA] zł${i.deposit?` · zadatek ${i.deposit} zł`:''}</div></div>
+  <button class="mini" onclick="startBooking('${i.id}')">Zapisz</button></div>`).join('')}</div></div>`).join('')}`;
+}
+
+/* ---------- ZAPIS ---------- */
+function daysList(){const out=[];let d=addD(today,1);while(out.length<10){if(d.getDay()!==0&&d.getDay()!==1)out.push(d);d=addD(d,1)}return out}
+const TIMES=['9:00','10:00','11:30','13:00','14:30','16:00','17:30'];
+function slotTaken(day,staff,t,i){
+ if(staff==='s2'&&S.vacation.s2)return true;
+ if(S.upcoming.some(u=>u.staff===staff&&+u.date===+day&&u.time===t))return true;
+ return hash(day.toDateString()+staff+t)%3===0;
+}
+function startBooking(svc){S.booking={svc:svc||null,staff:null,day:null,time:null,note:''};if(svc){const st=SVC[svc].staff;S.booking.staff=st[0]}go('book')}
+function vBook(){
+ const b=S.booking, svc=b.svc&&SVC[b.svc];
+ const days=daysList(); if(!b.day)b.day=days[3];
+ const staffOpts=svc?STAFF.filter(s=>svc.staff.includes(s.id)):STAFF;
+ if(svc&&!svc.staff.includes(b.staff))b.staff=svc.staff[0];
+ const allSvc=CATS.flatMap(c=>c.items);
+ return `<h1>Zapis na wizytę</h1><p class="sub">Wybierz usługę, osobę i termin</p>
+ <div class="label eyebrow">Usługa</div>
+ ${allSvc.filter(i=>!b.svc||true).slice(0,b.svc?allSvc.length:allSvc.length).map(i=>`<button class="svc ${b.svc===i.id?'on':''}" onclick="S.booking.svc='${i.id}';S.booking.time=null;render()">${i.name}<small>+${SVC[i.id].pts} pkt</small></button>`).join('')}
+ ${svc?`
+ <div class="label eyebrow">Do kogo</div>
+ <div class="chips">${staffOpts.map(s=>`<button class="chip ${b.staff===s.id?'on':''}" onclick="S.booking.staff='${s.id}';S.booking.time=null;render()">${s.name}${s.id==='s2'&&S.vacation.s2?' · urlop':''}</button>`).join('')}</div>
+ <div class="label eyebrow">Dzień · ${MON[b.day.getMonth()]}</div>
+ <div class="chips">${days.map(d=>`<button class="day ${+d===+b.day?'on':''}" onclick="S.booking.day=new Date(${+d});S.booking.time=null;render()"><small>${DOW[d.getDay()]}</small><b>${d.getDate()}</b></button>`).join('')}</div>
+ <div class="label eyebrow">Godzina</div>
+ ${b.staff==='s2'&&S.vacation.s2?`<div class="card soft" style="font-size:13.5px">${staffName('s2')} jest na urlopie – wybierz inną osobę. Grafik aktualizuje się od razu po zmianie w panelu salonu.</div>`:''}
+ <div class="slots">${TIMES.map((t,i)=>{const tk=slotTaken(b.day,b.staff,t,i);return `<button class="slot ${b.time===t?'on':''}" ${tk?'disabled':''} onclick="S.booking.time='${t}';render()">${t}</button>`}).join('')}</div>
+ <div class="label eyebrow">Wiadomość do stylistki</div>
+ <input class="field" placeholder="np. chcę chłodniejszy blond, mam zdjęcie inspiracji" oninput="S.booking.note=this.value" value="${b.note}">
+ <div class="card soft" style="margin-top:16px">
+  <div class="row between"><b>${svc.name}</b><span class="pill dark">+${svc.pts} pkt</span></div>
+  <div class="sub">${b.time?`${fmt(b.day)}, ${b.time} · ${staffName(b.staff)} · ${svc.dur} min`:'Wybierz godzinę'}</div>
+  ${svc.deposit?`<div class="sub" style="color:var(--honey-ink);font-weight:600">Zadatek ${svc.deposit} zł (BLIK lub karta) – odliczany od ceny</div>`:''}
+ </div>
+ <button class="btn" ${b.time?'':'disabled'} onclick="confirmBooking()">${svc.deposit?`Zapłać zadatek ${svc.deposit} zł`:'Potwierdź wizytę'}</button>`:''}`;
+}
+function confirmBooking(){
+ const b=S.booking,svc=SVC[b.svc];
+ if(svc.deposit){
+  sheet(`<h2>Zadatek ${svc.deposit} zł</h2><p class="sub">Płatność przez Przelewy24 / Stripe. W prototypie wpisz dowolny kod.</p>
+  <div class="chips"><button class="chip on">BLIK</button><button class="chip">Karta</button><button class="chip">Apple Pay</button></div>
+  <input class="field code" maxlength="6" inputmode="numeric" placeholder="BLIK">
+  <button class="btn honeyBtn" onclick="closeSheet();finishBooking(true)">Zapłać ${svc.deposit} zł</button>
+  <p class="sub" style="text-align:center;margin-top:10px;font-size:12px">Pieniądze trafiają prosto na konto salonu.</p>`);
+ }else finishBooking(false);
+}
+function finishBooking(paid){
+ const b=S.booking,svc=SVC[b.svc];
+ S.upcoming.push({id:Date.now(),svc:b.svc,staff:b.staff,date:b.day,time:b.time,paid});
+ S.upcoming.sort((a,c)=>a.date-c.date);
+ sheet(`<div style="text-align:center"><div class="logoMark" style="margin:0 auto;width:64px;height:64px">${I('check','width:30px;height:30px')}</div>
+ <h1 style="margin-top:16px">Do zobaczenia!</h1>
+ <p class="sub" style="font-size:15px">${svc.name}<br>${fmt(b.day)}, ${b.time} · ${staffName(b.staff)}</p>
+ <div class="card soft" style="text-align:left"><b>+${svc.pts} pkt</b> wpadnie na Twoje konto po wizycie.<br><span class="sub">Przypomnimy Ci dzień wcześniej.</span></div>
+ <button class="btn" onclick="closeSheet();go('start')">Super</button></div>`);
+}
+function cancelVisit(id){
+ sheet(`<h2>Odwołać wizytę?</h2><p class="sub" style="font-size:14px">Termin wróci do puli i dostaną go osoby z listy oczekujących. Zadatek zwracamy przy odwołaniu min. 24 h wcześniej.</p>
+ <button class="btn" onclick="S.upcoming=S.upcoming.filter(u=>u.id!==${id});closeSheet();render();toast('Wizyta odwołana')">Tak, odwołaj</button>
+ <button class="btn ghost" onclick="closeSheet()">Zostaw</button>`);
+}
+
+/* ---------- PUNKTY ---------- */
+function vPoints(){
+ return `<h1>Moje punkty</h1><p class="sub">1 wizyta = punkty na kolejną usługę</p>
+ <div class="card dark"><div style="font-size:13px;color:#cfc6bd">Masz na koncie</div><div class="big" style="margin-top:8px">${S.points} pkt</div>
+ <div style="font-size:12.5px;color:#cfc6bd;margin-top:10px">Punkty ważne 12 miesięcy od wizyty</div></div>
+ <div class="card"><h2 style="font-size:17px">Wymień na usługę</h2><div class="list" style="margin-top:6px">
+ ${REWARDS.map(r=>`<div class="li"><div><div class="t">${r.name}</div><div class="s">${r.cost} pkt</div></div>
+ ${S.points>=r.cost?`<button class="mini fill" onclick="redeem('${r.id}')">Wymień</button>`:`<span class="s">brakuje ${r.cost-S.points} pkt</span>`}</div>`).join('')}</div></div>
+ <div class="card"><h2 style="font-size:17px">Zdobywaj więcej</h2><div class="list" style="margin-top:6px">
+  <div class="li"><div class="row">${I('scissors')}<div class="t" style="font-size:13.5px">Koloryzacja / strzyżenie / pielęgnacja</div></div><b>+3 / +2 / +1</b></div>
+  <div class="li"><div class="row">${I('heart')}<div class="t" style="font-size:13.5px">Polecenie koleżanki</div></div><b>+5</b></div>
+  <div class="li"><div class="row">${I('gift')}<div class="t" style="font-size:13.5px">Urodziny</div></div><b>+4</b></div>
+  <div class="li"><div class="row">${I('clock')}<div class="t" style="font-size:13.5px">Termin last minute</div></div><b>x2</b></div>
+ </div></div>
+ <div class="card"><h2 style="font-size:17px">Historia punktów</h2><div class="list" style="margin-top:6px">
+ ${S.log.map(l=>`<div class="li"><div><div class="t" style="font-size:13.5px">${l.t}</div><div class="s">${l.date.getDate()} ${MON[l.date.getMonth()]}</div></div><b style="color:${l.d[0]==='+'?'var(--ok)':'var(--danger)'}">${l.d}</b></div>`).join('')}
+ </div></div>`;
+}
+function redeem(id){
+ const r=REWARDS.find(x=>x.id===id);
+ sheet(`<h2>${r.name}</h2><p class="sub" style="font-size:14px">Za ${r.cost} pkt. Dostaniesz kupon, który pokażesz w salonie przy najbliższej wizycie.</p>
+ <button class="btn honeyBtn" onclick="doRedeem('${id}')">Wymieniam ${r.cost} pkt</button><button class="btn ghost" onclick="closeSheet()">Jeszcze nie</button>`);
+}
+function doRedeem(id){
+ const r=REWARDS.find(x=>x.id===id);S.points-=r.cost;S.log.unshift({t:r.name,d:'−'+r.cost,date:new Date()});
+ sheet(`<div style="text-align:center"><div class="eyebrow">Twój kupon</div><h1 style="margin-top:8px">${r.name}</h1>
+ <div class="card dark" style="margin-top:16px"><div style="font-size:34px;font-weight:800;letter-spacing:.2em;color:var(--honey)">HW-${(hash(id+Date.now())%9000+1000)}</div><div style="font-size:12px;color:#cfc6bd;margin-top:6px">Pokaż w salonie</div></div>
+ <button class="btn" onclick="closeSheet();render()">Gotowe</button></div>`);
+}
+
+/* ---------- NOWOŚCI ---------- */
+function vNews(){
+ return `<h1>Nowości</h1><p class="sub">Promocje, nowe usługi i co słychać w salonie</p>
+ ${S.posts.map((p,i)=>`<div class="card ${p.style==='honey'?'honey':p.style==='soft'?'soft':''} fade">
+  <div class="eyebrow" style="${p.style==='honey'?'color:var(--honey-ink)':''}">${p.type}</div>
+  <h2 style="margin-top:6px;font-size:18px">${p.title}</h2>
+  <p style="font-size:13.5px;margin-top:6px;color:${p.style==='honey'?'var(--ink)':'var(--muted)'};line-height:1.45">${p.body}</p>
+  ${p.cta?`<button class="mini ${p.style==='honey'?'blk':''}" style="margin-top:12px" onclick="${p.slot?`takeLast(${i})`:`startBooking('${p.svc}')`}">${p.cta}</button>`:''}
+  ${p.link?`<a class="mini" style="display:inline-block;margin-top:12px;text-decoration:none" href="https://gracjanasuntouch.pl/" target="_blank" rel="noopener">Szczegóły szkolenia</a>`:''}
+ </div>`).join('')}
+ <a class="card row" href="https://www.instagram.com/${SALON.ig}/" target="_blank" rel="noopener" style="text-decoration:none">
+  <div class="logoMark" style="background:var(--ink);color:#fff;width:40px;height:40px">${I('ig')}</div>
+  <div style="flex:1"><h3 style="font-size:14px">Nowy post na Instagramie</h3><div class="sub">@${SALON.ig} · zobacz metamorfozy</div></div>${I('arrow')}</a>`;
+}
+function openPost(i){go('news')}
+function takeLast(i){
+ const p=S.posts[i];
+ S.upcoming.push({id:Date.now(),svc:p.svc,staff:p.staff,date:p.date,time:p.time,paid:false});S.upcoming.sort((a,c)=>a.date-c.date);
+ S.posts.splice(i,1);render();toast(`Termin Twój! ${p.time}, podwójne punkty`,'star');
+}
+
+/* ---------- KONTO ---------- */
+function vAccount(){
+ return `<h1>Moje konto</h1><p class="sub">${S.name} · ${S.email||'kasia@example.com'}</p>
+ <div class="card"><h2 style="font-size:17px">Historia wizyt</h2><div class="list" style="margin-top:6px">
+ ${S.history.map((h,i)=>`<div style="padding:13px 0"><div class="row between"><div><div class="t" style="font-weight:600">${SVC[h.svc].name}</div><div class="sub" style="margin-top:2px">${h.date.getDate()} ${MON[h.date.getMonth()]} · ${staffName(h.staff)}</div></div>
+ ${h.rated?`<span class="status st-done">oceniona</span>`:`<button class="mini fill" onclick="rate(${i})">Oceń</button>`}</div>
+ ${h.note?`<div class="card soft" style="margin-top:8px;padding:10px 12px;font-size:12.5px"><b>Notatka stylistki:</b> ${h.note}</div>`:''}</div>`).join('')}
+ </div></div>
+ <div class="card"><h2 style="font-size:17px">Twój kod polecający</h2>
+  <div class="row between" style="margin-top:10px"><div style="font-size:26px;font-weight:800;letter-spacing:.12em">${REFCODE}</div>
+  <button class="mini" onclick="copyRef()">${'Kopiuj'}</button></div>
+  <div class="sub">Koleżanka wpisuje go przy rejestracji. Po jej pierwszej wizycie obie dostajecie +5 pkt.</div></div>
+ <div class="card"><h2 style="font-size:17px">Salon</h2><div class="list" style="margin-top:6px">
+  <div class="li"><div class="row">${I('pin')}<span style="font-size:13.5px">${SALON.address}</span></div></div>
+  <div class="li"><div class="row">${I('phone')}<span style="font-size:13.5px">${SALON.phone}</span></div></div>
+  <div class="li"><div class="row">${I('ig')}<span style="font-size:13.5px">@${SALON.ig}</span></div></div>
+ </div></div>
+ <div class="card dark row between" onclick="togglePanel()" style="cursor:pointer"><div class="row">${I('panel','color:var(--honey)')}<div><h3>Podgląd panelu salonu</h3><div style="font-size:12px;color:#cfc6bd">Tak to widzi Gracjana (demo)</div></div></div>${I('arrow','color:var(--honey)')}</div>
+ <div class="card" style="font-size:13.5px"><div class="list">
+  <div class="li"><span>Powiadomienia o promocjach</span><span class="switch on" onclick="this.classList.toggle('on')"></span></div>
+  <div class="li"><span>Regulamin · Prywatność</span>${I('arrow')}</div>
+  <div class="li" style="color:var(--danger)"><span>Usuń konto i dane</span></div>
+  <div class="li"><button onclick="S.auth='email';render()" style="font-weight:600">Wyloguj</button></div>
+ </div></div>`;
+}
+function copyRef(){try{navigator.clipboard.writeText(REFCODE).then(()=>toast('Skopiowano kod '+REFCODE),()=>toast('Kod: '+REFCODE))}catch(e){toast('Kod: '+REFCODE)}}
+function openRefer(){sheet(`<h2>Poleć koleżankę</h2><p class="sub" style="font-size:14px">Wyślij jej swój kod. Po jej pierwszej wizycie obie dostajecie +5 pkt.</p>
+ <div class="card dark" style="text-align:center"><div style="font-size:34px;font-weight:800;letter-spacing:.2em;color:var(--honey)">${REFCODE}</div></div>
+ <button class="btn honeyBtn" onclick="copyRef();closeSheet()">${I('copy')} Kopiuj kod</button>`)}
+function rate(i){S.rating=0;drawRate(i)}
+function drawRate(i){sheet(`<h2>Jak było?</h2><p class="sub">${SVC[S.history[i].svc].name} · ${staffName(S.history[i].staff)}</p>
+ <div class="stars">${[1,2,3,4,5].map(n=>`<button class="${n<=S.rating?'on':''}" onclick="S.rating=${n};drawRate(${i})">${I('star')}</button>`).join('')}</div>
+ <input class="field" placeholder="Kilka słów (opcjonalnie)">
+ ${S.rating===5?`<div class="card soft" style="font-size:13px">Dziękujemy! Wrzucisz też opinię w Google? To bardzo pomaga salonowi.</div>`:''}
+ <button class="btn" ${S.rating?'':'disabled'} onclick="S.history[${i}].rated=true;closeSheet();render();toast('Dziękujemy za opinię!')">Wyślij</button>`)}
+
+/* ---------- PANEL SALONU (demo) ---------- */
+function togglePanel(){S.panel=!S.panel;S.view=S.panel?'pDay':'start';render();$('#screen').scrollTop=0}
+function vPanelDay(){
+ const done=S.todayList.filter(a=>a.status==='done').length;
+ return `<h1>Dziś</h1><p class="sub">${fmt(today)} · ${S.todayList.length} wizyty</p>
+ <div class="grid2" style="grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px">
+  <div class="stat"><b>${S.todayList.length}</b><small>wizyty dziś</small></div>
+  <div class="stat"><b>${done}</b><small>zakończone</small></div>
+  <div class="stat"><b>82%</b><small>obłożenie tyg.</small></div></div>
+ <div class="card"><div class="list">
+ ${S.todayList.map(a=>`<div style="padding:12px 0"><div class="row between"><div class="row"><b style="width:44px">${a.time}</b><div><div style="font-weight:600;font-size:14px">${a.client}</div><div class="sub" style="margin-top:1px;font-size:12px">${SVC[a.svc].name} · ${staffName(a.staff)}</div></div></div>
+ <span class="status ${a.status==='plan'?'st-plan':a.status==='done'?'st-done':'st-no'}">${a.status==='plan'?'zaplanowana':a.status==='done'?`zakończona · +${SVC[a.svc].pts} pkt`:'nie przyszła'}</span></div>
+ ${a.status==='plan'?`<div class="row" style="margin-top:8px;padding-left:56px;gap:8px"><button class="mini blk" onclick="finish('${a.id}')">Zakończ</button><button class="mini" onclick="noShow('${a.id}')">Nie przyszła</button></div>`:''}</div>`).join('')}
+ </div></div>
+ <p class="sub" style="margin-top:10px;font-size:12px">„Zakończ” nalicza klientce punkty automatycznie. Spróbuj przy „Kasia (Ty – demo)” i wróć do aplikacji klientki.</p>`;
+}
+function finish(id){
+ const a=S.todayList.find(x=>x.id===id);a.status='done';
+ if(id==='me'){const p=SVC[a.svc].pts;S.points+=p;S.log.unshift({t:SVC[a.svc].name,d:'+'+p,date:new Date()});S.history.unshift({date:new Date(today),svc:a.svc,staff:a.staff,note:'Rytuał regenerujący + maska. Zalecenie: szampon fioletowy 1x w tygodniu.',rated:false});toast(`Kasia dostała +${p} pkt`,'star')}
+ else toast(`${a.client}: +${SVC[a.svc].pts} pkt naliczone`,'star');
+ render();
+}
+function noShow(id){S.todayList.find(x=>x.id===id).status='no';render();toast('Oznaczono nieobecność. Zadatek zostaje w salonie.','x')}
+function vPanelTeam(){
+ return `<h1>Grafik zespołu</h1><p class="sub">Zmiany widać od razu w zapisach klientek</p>
+ ${STAFF.map(s=>`<div class="card"><div class="row between"><div class="row"><div class="logoMark" style="width:40px;height:40px;font-weight:700">${s.name.replace(/[\[\]]/g,'')[0]}</div><div><h3>${s.name}</h3><div class="sub" style="margin-top:1px">Wt–Sob · 9:00–18:00</div></div></div></div>
+ ${s.id==='s2'?`<div class="li" style="border-top:1px solid var(--line);margin-top:12px;padding-bottom:0"><div><div class="t">Urlop do końca miesiąca</div><div class="s">Blokuje wszystkie terminy</div></div><span class="switch ${S.vacation.s2?'on':''}" onclick="S.vacation.s2=!S.vacation.s2;render();toast(S.vacation.s2?'Urlop dodany – terminy zablokowane':'Urlop usunięty – terminy znów wolne','cal')"></span></div>`:''}
+ </div>`).join('')}
+ <p class="sub" style="margin-top:10px;font-size:12px">Włącz urlop [Stylistki 2] i wejdź w Zapis po stronie klientki – jej godziny znikną.</p>`;
+}
+function vPanelNews(){
+ return `<h1>Promocje i powiadomienia</h1><p class="sub">Dodajesz tutaj, klientki widzą od razu w zakładce Nowości</p>
+ <div class="card honey"><div class="eyebrow" style="color:var(--honey-ink)">Szybka akcja</div>
+  <h2 style="margin-top:6px">Ktoś odwołał wizytę?</h2><p style="font-size:13.5px;margin-top:4px">Wyślij wolny termin jako „Ostatnia chwila” z podwójnymi punktami.</p>
+  <button class="btn" onclick="sendLast()">${I('send')} Wyślij: jutro 14:30, strzyżenie</button></div>
+ <div class="card"><h3>Nowa promocja</h3>
+  <input class="field" id="pt" placeholder="Tytuł, np. Grudniowy SunTouch −10%">
+  <input class="field" id="pb" placeholder="Opis">
+  <button class="btn ghost" onclick="addPromo()">Opublikuj w aplikacji</button></div>
+ <div class="card"><h3>Statystyki tygodnia</h3><div class="list" style="margin-top:6px">
+  <div class="li"><span class="t" style="font-weight:500">Wizyty</span><b>38</b></div>
+  <div class="li"><span class="t" style="font-weight:500">Nowe klientki</span><b>6</b></div>
+  <div class="li"><span class="t" style="font-weight:500">Z polecenia</span><b>3</b></div>
+  <div class="li"><span class="t" style="font-weight:500">Nieobecności</span><b>1</b></div>
+  <div class="li"><span class="t" style="font-weight:500">Najczęstsza usługa</span><b>SunTouch</b></div>
+ </div><p class="sub" style="font-size:11.5px;margin-top:6px">Liczby przykładowe.</p></div>`;
+}
+function sendLast(){
+ const d=addD(today,1);
+ S.posts.unshift({type:'OSTATNIA CHWILA',title:`Wolny termin jutro o 14:30`,body:'Strzyżenie z podwójnymi punktami (+4 pkt).',cta:'Biorę!',svc:'cut',staff:'s3',date:d,time:'14:30',slot:true,style:'soft'});
+ S.newsSeen=false;render();toast('Push wysłany do 46 klientek ze zgodą na promocje','bell');
+}
+function addPromo(){
+ const t=$('#pt').value.trim();if(!t){toast('Wpisz tytuł promocji','x');return}
+ S.posts.unshift({type:'PROMOCJA',title:t,body:$('#pb').value||'',cta:'Zarezerwuj',svc:'suntouch',style:'honey'});S.newsSeen=false;render();toast('Promocja opublikowana','check');
+}
+
+/* ---------- render ---------- */
+const NAV=[['start','home','Start'],['services','scissors','Usługi'],['book','cal','Zapis'],['points','star','Punkty'],['news','bell','Nowości']];
+const PNAV=[['pDay','cal','Dziś'],['pTeam','user','Grafik'],['pNews','bell','Promocje'],['exit','back','Aplikacja']];
+function render(){
+ const scr=$('#screen'),nav=$('#nav'),pb=$('#panelBar');
+ if(S.auth!=='done'){scr.className='screen noNav fade';scr.innerHTML=vAuth();nav.style.display='none';pb.innerHTML='';return}
+ nav.style.display='flex';scr.className='screen';
+ if(S.panel){
+  pb.innerHTML=`<div class="panelBar"><span>Panel salonu · <b>Historia Włosa</b></span><span style="color:#cfc6bd">Gracjana (właścicielka)</span></div>`;
+  const map={pDay:vPanelDay,pTeam:vPanelTeam,pNews:vPanelNews};
+  scr.innerHTML=(map[S.view]||vPanelDay)();
+  nav.innerHTML=PNAV.map(([v,ic,l])=>`<button class="${S.view===v?'on':''}" onclick="${v==='exit'?'togglePanel()':`go('${v}')`}"><span class="ib">${I(ic)}</span>${l}</button>`).join('');
+  return;
+ }
+ pb.innerHTML='';
+ const map={start:vStart,services:vServices,book:vBook,points:vPoints,news:vNews,account:vAccount};
+ scr.innerHTML=map[S.view]();
+ nav.innerHTML=NAV.map(([v,ic,l])=>`<button style="position:relative" class="${S.view===v?'on':''} ${v==='book'?'center':''}" onclick="${v==='book'?'startBooking()':`go('${v}')`}"><span class="ib">${I(ic)}</span>${l}${v==='news'&&!S.newsSeen?'<span class="badge">'+S.posts.length+'</span>':''}</button>`).join('');
+}
+render();
+</script>
+</body>
+</html>
